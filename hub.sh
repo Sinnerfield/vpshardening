@@ -5,8 +5,8 @@ IFS='
 
 # vars zone ====================================
 
-scriptname=deployer.sh
-
+scriptname="deployer.sh"
+PORT_INPUT="" #use as positional inside funct like $1
 # vars zone ====================================
 ################################################
 # Sources zone =================================
@@ -23,7 +23,7 @@ Usage: ${scriptname}.sh [-h] [-v] [-p]
 
   [-h]:   run vps hardening
   [-v]:   set up run_vpn
-  [-p]:   idk for now
+  [-p]:   custom port for ssh
 EOF
 
   exit 2
@@ -45,7 +45,7 @@ while getopts ":hvp:" opt; do
   case ${opt} in
   h) run_hardening ;;
   v) run_vpn_setup ;;
-  p) PORT=$OPTARG ;;
+  p) PORT_INPUT=$OPTARG ;;
   \?) help_print ;;
   esac
 done
