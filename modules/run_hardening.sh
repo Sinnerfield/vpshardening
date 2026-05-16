@@ -7,7 +7,6 @@ set -x
 
 DIR_SSHD="/etc/ssh/sshd_config"
 DIR_SSHD_BACK="/etc/ssh/sshd_config.bak"
-
 #sources zone
 source ./os_release.sh
 source ./sshd_gen_conf.sh
@@ -61,9 +60,10 @@ ssh_make_back_cfg() {
 }
 
 check_and_make_ssh() {
-  checkssh
-  ssh_makecfg
-  make_sshd
+  local PORT_INPUT="$1"
+  check_ssh
+  ssh_make_back_cfg
+  make_sshd "$PORT_INPUT"
   return 0
 }
 
@@ -84,14 +84,14 @@ check_and_make_ufw() {
 # NOTE: please do not use this funct as for now
 generate_keys() {
 
-  Echo "Generating ssh keys, do you want to specify custom location?" # add custom location later
+  echo "Generating ssh keys, do you want to specify custom location?" # add custom location later
   ssh-keygen -t ed25519
 }
 
 #WARNING: master funct!
 
 run_hardening() {
+  local PORT_INPUT="$1"
   check_and_make_ufw
-  check_and_make_ssh
-  make_sshd
+  check_and_make_ssh "$PORT_INPUT"
 }

@@ -7,11 +7,13 @@ IFS='
 
 scriptname="deployer.sh"
 PORT_INPUT="" #use as positional inside funct like $1
+RUN_HARDENING=false
+RUN_VPS_SETUP=false
 # vars zone ====================================
 ################################################
 # Sources zone =================================
 
-# source ./modules/run_hardening.sh
+source ./modules/run_hardening.sh
 # source ./modules/xray_installer.sh
 # source ./modules/xray_configurator.sh#
 
@@ -43,10 +45,18 @@ done
 
 while getopts ":hvp:" opt; do
   case ${opt} in
-  h) run_hardening ;;
-  v) run_vpn_setup ;;
+  h) RUN_HARDENING=true ;;
+  v) RUN_VPS_SETUP=true ;;
   p) PORT_INPUT=$OPTARG ;;
   \?) help_print ;;
   esac
 done
 shift "$((OPTIND - 1))"
+
+if [[ "$RUN_HARDENING" == true ]]; then
+  run_hardening "$PORT_INPUT"
+fi
+
+if [[ "$RUN_VPS_SETUP" == true ]]; then
+  run_vps_setup
+fi
