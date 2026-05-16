@@ -15,9 +15,9 @@ latestbackup() {
 
 }
 
-harden_sshd_config() {
+make_sshd() { #has 1 Pos args
 
-  local changeport="$1"
+  local changeport="$PORT_INPUT"
   local settimeout="$2"
 
   cat <<EOF >>$DIR_SSHD_BACK
@@ -32,11 +32,36 @@ EOF
 Port 22
 EOF
   else
+    #change to set port & disable regular 22
     sudo ufw allow ${changeport}/tcp
+
+    sudo ufw deny 22/tcp
     sudo ufw reload
+
     echo "Changing Default port to ${changeport}..."
     cat <<EOF >>$DIR_SSHD_BACK
 Port ${changeport}
 EOF
+  fi
+
+  # Now, test it!
+  if test_sshd; then
+    return 0
+    echo "Sshd passed test!"
+  else
+    return 1
+  fi
+}
+
+test_sshd() {
+
+  if sudo sshd -t &>/dev/null; then
+    echo "Sshd config [done!], no errors detected."
+    sudo systemctl reload sshd
+    return 0
+  else
+    echo "Error: sshd errors detected!"
+    sudo sshd -t
+    return 1
   fi
 }

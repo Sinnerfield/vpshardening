@@ -12,6 +12,25 @@ DIR_SSHD_BACK="/etc/ssh/sshd_config.bak"
 source ./os_release.sh
 source ./sshd_gen_conf.sh
 
+check_ufw() {
+  PACKAGE="ufw"
+
+  if dpkg -l "$PACKAGE" &>/dev/null; then
+    return 0
+  else
+    echo "UFW firewall is not installed, installing..."
+    sudo apt-get update && sudo apt-get install -y "$PACKAGE"
+    sudo systemctl enable --now ufw
+  fi
+
+}
+
+make_ufw() {
+  sudo ufw allow ssh
+  sudo ufw --force enable
+
+}
+
 check_ssh() {
   PACKAGE="openssh-server"
 
@@ -21,13 +40,14 @@ check_ssh() {
 
     echo "SSH service is not installed, installing..."
     sudo apt-get update && sudo apt-get install -y "$PACKAGE"
+    sudo systemctl enable --now sshd
 
   fi
 
   return 0
 }
 
-ssh_makecfg() {
+ssh_make_back_cfg() {
 
   if [[ -e "$DIR_SSHD" ]]; then #if sshd conf exists, create backup
 
@@ -43,15 +63,35 @@ ssh_makecfg() {
 check_and_make_ssh() {
   checkssh
   ssh_makecfg
-
+  make_sshd
   return 0
 }
 
+check_and_make_ufw() {
+  check_ufw
+  make_ufw
+}
+
 # TODO:
-# 1) modify sshd_config
+# 1) edit sshd [DONE!]
+# 1.11) test with sshd -t and reload systemctl [DONE!]
 # 1.1) Generate keys or ask user to generate them
-# 2) configure UFW or iptables(latter better)
+# 2) configure UFW or iptables(latter better) [50%]
 # 3) Install & configure fail2ban
-# NOTE! ALWAYS RUN UFW FUNCT BEFORE ANYTHING IN sshd_gen_conf as im lazy to implement checks, latter sh
+# NOTE: ALWAYS RUN UFW FUNCT BEFORE ANYTHING IN sshd_gen_conf as im lazy to implement checks, latter sh
 # assumes ufw is installed already
-# NOTE2. Implement sshd check through sshd -t and reaload sshd in the end and in scripts!
+
+# NOTE: please do not use this funct as for now
+generate_keys() {
+
+  Echo "Generating ssh keys, do you want to specify custom location?" # add custom location later
+  ssh-keygen -t ed25519
+}
+
+#WARNING: master funct!
+
+run_hardening() {
+  check_and_make_ufw
+  check_and_make_ssh
+  make_sshd
+}
