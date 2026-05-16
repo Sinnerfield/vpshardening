@@ -8,8 +8,8 @@ set -x
 DIR_SSHD="/etc/ssh/sshd_config"
 DIR_SSHD_BACK="/etc/ssh/sshd_config.bak"
 #sources zone
-source ./os_release.sh
-source ./sshd_gen_conf.sh
+source ./modules/os_release.sh
+source ./modules/sshd_gen_conf.sh
 
 check_ufw() {
   PACKAGE="ufw"
