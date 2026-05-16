@@ -14,7 +14,7 @@ source ./modules/sshd_gen_conf.sh
 check_ufw() {
   PACKAGE="ufw"
 
-  if dpkg -l "$PACKAGE" &>/dev/null; then
+  if command -v "$PACKAGE" &>/dev/null; then
     return 0
   else
     echo "UFW firewall is not installed, installing..."
@@ -33,7 +33,7 @@ make_ufw() {
 check_ssh() {
   PACKAGE="openssh-server"
 
-  if dpkg -l "$PACKAGE" &>/dev/null; then
+  if command -v "$PACKAGE" &>/dev/null; then
     return 0
   else
 
