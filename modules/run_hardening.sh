@@ -39,7 +39,7 @@ check_ssh() {
   else
 
     echo "SSH service is not installed, installing..."
-    sudo apt-get update && sudo apt-get install -y "$BINARY"
+    sudo apt-get update && sudo apt-get install -y "$PACKAGE"
     sudo systemctl enable --now ssh
 
   fi
