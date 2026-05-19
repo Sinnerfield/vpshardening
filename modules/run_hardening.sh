@@ -14,7 +14,7 @@ source ./modules/sshd_gen_conf.sh
 check_ufw() {
   PACKAGE="ufw"
 
-  if command -v "$PACKAGE" &>/dev/null; then
+  if [[ -x /usr/sbin/ufw ]]; then
     return 0
   else
     echo "UFW firewall is not installed, installing..."
@@ -47,16 +47,16 @@ make_ufw() {
   #decided to just overwrite this even if exits, means we run script before, so we just
   #overwrite it with new -p if any
   cat <<EOF | sudo tee /etc/ufw/applications.d/custom_ssh_port >/dev/null
-[Custom_ssh_port]
+[Custom_ssh_port_${PORT_INPUT}]
 title=Custom_ssh
-description=Custm SSH PORT CREATED BY vpshardening script
+description=Custom SSH PORT by vpshardening script
 ports=${PORT_INPUT}/tcp
 EOF
 
   #now apply to ufw
   sudo ufw app update all
   # check if app updated
-  if [[ -z $(sudo ufw app list | grep custom) ]]; then
+  if [[ -z $(sudo ufw app list | grep -i custom) ]]; then
     echo "Error: cannot find custom ufw app"
     return 1
   else
