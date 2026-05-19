@@ -77,7 +77,7 @@ check_ssh() {
   PACKAGE="openssh-server"
   BINARY="sshd"
 
-  if command -v "$BINARY" &>/dev/null; then
+  if [[ -x /usr/sbin/sshd ]]; then
     return 0
   else
 
