@@ -32,14 +32,15 @@ make_ufw() {
 
 check_ssh() {
   PACKAGE="openssh-server"
+  BINARY="sshd"
 
-  if command -v "$PACKAGE" &>/dev/null; then
+  if command -v "$BINARY" &>/dev/null; then
     return 0
   else
 
     echo "SSH service is not installed, installing..."
-    sudo apt-get update && sudo apt-get install -y "$PACKAGE"
-    sudo systemctl enable --now sshd
+    sudo apt-get update && sudo apt-get install -y "$BINARY"
+    sudo systemctl enable --now ssh
 
   fi
 
