@@ -33,7 +33,6 @@ latestbackup() {
 make_sshd() { #has 1 Pos args
 
   local changeport="$1"
-  local settimeout="$2"
 
   cat <<EOF | sudo tee -a "$DIR_SSHD" >/dev/null
 PermitRootLogin no
