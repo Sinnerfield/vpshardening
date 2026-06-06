@@ -61,31 +61,3 @@ EOF
   test_sshd
   return $?
 }
-
-make_sshd_old() { #has 1 Pos args
-
-  local changeport="$1"
-
-  cat <<EOF | sudo tee -a "$DIR_SSHD" >/dev/null
-PermitRootLogin no
-PasswordAuthentication no
-PermitEmptyPasswords no
-EOF
-
-  if [[ -z "$changeport" ]]; then
-    echo "-p argument not specified. Default port for ssh set to 22..."
-    cat <<EOF | sudo tee -a "$DIR_SSHD" >/dev/null
-Port 22
-EOF
-  else
-    #change to set port
-    echo "Changing Default port to ${changeport}..."
-    cat <<EOF | sudo tee -a "$DIR_SSHD" >/dev/null
-Port ${changeport}
-EOF
-  fi
-
-  # Now, test it!
-  test_sshd
-  return $?
-}
