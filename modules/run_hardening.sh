@@ -10,6 +10,7 @@ DIR_SSHD_BACK="/etc/ssh/sshd_config.bak"
 #sources zone
 source ./modules/os_release.sh
 source ./modules/sshd_gen_conf.sh
+source ./modules/get_pubkey.sh
 
 check_ufw() {
   PACKAGE="ufw"
@@ -120,23 +121,20 @@ check_and_make_ufw() {
 # TODO:
 # 1) edit sshd [DONE!]
 # 1.11) test with sshd -t and reload systemctl [DONE!]
-# 1.1) Generate keys or ask user to generate them
+# 1.1) Generate keys or ask user to generate them [DONE!] {HAVE NOT TESTED}
 # 2) configure UFW or iptables(latter better) [DONE!]
 # 3) Install & configure fail2ban
 # NOTE: ALWAYS RUN UFW FUNCT BEFORE ANYTHING IN sshd_gen_conf as im lazy to implement checks, latter sh
 # assumes ufw is installed already
 
-# NOTE: please do not use this funct as for now
-generate_keys() {
-
-  echo "Generating ssh keys, do you want to specify custom location?" # add custom location later
-  ssh-keygen -t ed25519
-}
-
 #WARNING: master funct!
 
 run_hardening() {
+
   local PORT_INPUT="$1"
+  local KEY_INPUT="$2"
+
+  install_pub_key "$KEY_INPUT"
   check_and_make_ufw "$PORT_INPUT"
   check_and_make_ssh "$PORT_INPUT"
 }

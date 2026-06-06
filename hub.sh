@@ -7,6 +7,7 @@ IFS='
 
 scriptname="deployer.sh"
 PORT_INPUT="" #use as positional inside funct like $1
+KEY_INPUT=""
 RUN_HARDENING=false
 RUN_VPS_SETUP=false
 # vars zone ====================================
@@ -21,11 +22,12 @@ source ./modules/run_hardening.sh
 
 help_print() {
   cat <<EOF
-Usage: ${scriptname}.sh [-h] [-v] [-p]
+Usage: ${scriptname}.sh [-h] [-v] [-p] [-k]
 
   [-h]:   run vps hardening
   [-v]:   set up run_vpn
   [-p]:   custom port for ssh
+  [-k]:   specify pub key for VPS
 EOF
 
   exit 2
@@ -43,18 +45,19 @@ done
 
 #parse - args
 
-while getopts ":hvp:" opt; do
+while getopts ":hvp:k:" opt; do
   case ${opt} in
   h) RUN_HARDENING=true ;;
   v) RUN_VPS_SETUP=true ;;
   p) PORT_INPUT=$OPTARG ;;
+  k) KEY_INPUT=$OPTARG ;;
   \?) help_print ;;
   esac
 done
 shift "$((OPTIND - 1))"
 
 if [[ "$RUN_HARDENING" == true ]]; then
-  run_hardening "$PORT_INPUT"
+  run_hardening "$PORT_INPUT" "$KEY_INPUT"
 fi
 
 if [[ "$RUN_VPS_SETUP" == true ]]; then
