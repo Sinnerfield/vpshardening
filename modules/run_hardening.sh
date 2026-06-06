@@ -56,7 +56,7 @@ EOF
   #now apply to ufw
   sudo ufw app update all
   # check if app updated
-  if [[ -z $(sudo ufw app list | grep -i custom) ]]; then
+  if [[ -z $(sudo ufw app list | grep -i Custom) ]]; then
     echo "Error: cannot find custom ufw app"
     return 1
   else
@@ -121,7 +121,7 @@ check_and_make_ufw() {
 # 1) edit sshd [DONE!]
 # 1.11) test with sshd -t and reload systemctl [DONE!]
 # 1.1) Generate keys or ask user to generate them
-# 2) configure UFW or iptables(latter better) [50%]
+# 2) configure UFW or iptables(latter better) [DONE!]
 # 3) Install & configure fail2ban
 # NOTE: ALWAYS RUN UFW FUNCT BEFORE ANYTHING IN sshd_gen_conf as im lazy to implement checks, latter sh
 # assumes ufw is installed already
