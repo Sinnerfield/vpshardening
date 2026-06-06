@@ -56,11 +56,11 @@ EOF
   #now apply to ufw
   sudo ufw app update all
   # check if app updated
-  if [[ -z $(sudo ufw app list | grep -i Custom) ]]; then
+  if [[ -z $(sudo ufw app list | grep -i custom) ]]; then
     echo "Error: cannot find custom ufw app"
     return 1
   else
-    sudo ufw allow Custom_ssh_port
+    sudo ufw allow Custom_ssh_port_${PORT_INPUT}
     sudo ufw --force enable
     sudo ufw reload
   fi
